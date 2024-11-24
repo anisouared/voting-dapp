@@ -1,12 +1,47 @@
 'use client'
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ConnectButton } from "@rainbow-me/rainbowkit";
-import { useAccount } from "wagmi";
 import Link from 'next/link';
+import { useReadContract, useAccount, useWriteContract, useWaitForTransactionReceipt } from "wagmi";
+import { contractAbi, contractAddress, workflowStatus } from '@/constants';
+
 
 const Header = () => {
+    const { data: hash, error, isPending: setIsPending, writeContract } = useWriteContract({});
+    const { isLoading: isConfirming, isSuccess, error: errorConfirmation } = useWaitForTransactionReceipt({ hash });
+
     const [isOpen, setIsOpen] = useState(false);
-    const { isConnected } = useAccount();
+    const { isConnected, address } = useAccount();
+    //const [selectedWorkflowStatus, setSelectedWorkflowStatus] = useState(0);
+
+    const { data: owner, error: errorGetOwner, isPending: isPendingGetOwner, refetch: refetchGetOwner } = useReadContract({
+        address: contractAddress,
+        abi: contractAbi,
+        functionName: 'owner',
+        account: address
+    })
+
+    const { data: workflowStatusGet, error: errorGetWorkflowStatus, isPending: isPendingGetWorkflowStatus, refetch: refetchGetWorkflowStatus } = useReadContract({
+        address: contractAddress,
+        abi: contractAbi,
+        functionName: 'workflowStatus',
+        account: address
+    })
+
+    const refetchEverything = async () => {
+        await refetchGetOwner();
+        await refetchGetWorkflowStatus();
+    }
+
+    useEffect(() => {
+        refetchEverything();
+    })
+
+    console.log('Address : ' + address);
+    console.log('Owner : ' + owner);
+    console.log('error owner :' + errorGetOwner)
+    console.log(owner != address);
+    console.log('workflowstatus is : ' + workflowStatusGet);
 
     return (
         <nav className="bg-white shadow-md">
@@ -27,14 +62,14 @@ const Header = () => {
                                     href="/"
                                     className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50"
                                 >
-                                    Accueil
+                                    Home
                                 </Link>
-                                <Link
+                                {owner == address && <Link
                                     href="/administration"
                                     className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50"
                                 >
                                     Administration
-                                </Link>
+                                </Link>}
                             </div>
                         )}
                     </div>
@@ -46,7 +81,7 @@ const Header = () => {
                                 <span className="text-sm">
                                     <span className="font-bold text-gray-800">Status :</span>{" "}
                                     <span className="font-semibold text-green-600">
-                                        Proposals Registration Started
+                                        {workflowStatus[workflowStatusGet]?.label ?? 0}
                                     </span>
                                 </span>
                             </div>
@@ -93,7 +128,7 @@ const Header = () => {
                             href="/"
                             className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50"
                         >
-                            Accueil
+                            Home
                         </Link>
                         <Link
                             href="/administration"

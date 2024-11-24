@@ -9,7 +9,7 @@ import {
     CardTitle,
 } from "@/components/ui/card"
 
-const NotConnected = () => {
+const NotAuthorized = () => {
     return (
         <div className="flex-1 p-4 md:p-6 lg:p-8">
             <div className="h-full flex items-start sm:items-center justify-center">
@@ -19,17 +19,16 @@ const NotConnected = () => {
                             <ShieldAlert className="w-7 h-7 text-[#f45970]" />
                         </div>
                         <CardTitle className="text-2xl sm:text-3xl font-bold text-gray-800">
-                            Non Connecté
+                            NOT AUTHORIZED
                         </CardTitle>
                         <CardDescription className="text-gray-500 text-base">
-                            Accès restreint pour utilisateurs connectés
+                            Access to this page restricted for authorized users.
                         </CardDescription>
                     </CardHeader>
 
                     <CardContent className="text-center px-6">
                         <p className="text-sm sm:text-base text-gray-600">
-                            Pour participer aux votes et accéder à toutes les fonctionnalités,
-                            veuillez connecter votre portefeuille crypto.
+                            To participate in voting and access all features, please connect your crypto wallet.
                         </p>
                     </CardContent>
                 </Card>
@@ -38,4 +37,4 @@ const NotConnected = () => {
     )
 }
 
-export default NotConnected
+export default NotAuthorized

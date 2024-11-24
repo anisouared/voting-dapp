@@ -2,7 +2,7 @@
 
 import Header from "./Header"
 import Footer from "./Footer"
-import NotConnected from "@/components/shared/NotConnected"
+import NotAuthorized from "@/components/shared/NotAuthorized"
 import { useAccount } from "wagmi";
 
 const Layout = ({ children }) => {
@@ -16,7 +16,7 @@ const Layout = ({ children }) => {
                     {children}
                 </main>
             ) : (
-                <NotConnected />
+                <NotAuthorized />
             )}
 
             <Footer />

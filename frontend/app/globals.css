@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+.rounded-full {
+  border-radius: 9999px;
+}
+
 .app {
   @apply flex flex-col min-h-screen;
 }

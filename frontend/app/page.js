@@ -1,5 +1,5 @@
 'use client'
-import NotConnected from "@/components/shared/NotConnected";
+import NotAuthorized from "@/components/shared/NotAuthorized";
 import Voting from "@/components/shared/Voting";
 
 import { useAccount } from "wagmi";
@@ -12,7 +12,7 @@ export default function Home() {
       {isConnected ? (
         <Voting />
       ) : (
-        <NotConnected />
+        <NotAuthorized />
       )}
     </>
   );

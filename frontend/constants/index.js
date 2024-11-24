@@ -1,4 +1,5 @@
 export const contractAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3"
+
 export const contractAbi = [
     {
         "inputs": [],
@@ -231,6 +232,30 @@ export const contractAbi = [
         "type": "function"
     },
     {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "name": "proposalsArray",
+        "outputs": [
+            {
+                "internalType": "string",
+                "name": "description",
+                "type": "string"
+            },
+            {
+                "internalType": "uint256",
+                "name": "voteCount",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
         "inputs": [],
         "name": "renounceOwnership",
         "outputs": [],
@@ -311,3 +336,37 @@ export const contractAbi = [
         "type": "function"
     }
 ]
+
+export const workflowStatus = [
+    {
+        value: 0,
+        label: "Registering Voters",
+        function: undefined,
+        description: "Adding voters to the whitelist ..."
+
+    },
+    {
+        value: 1,
+        label: "Start Proposals Registrating",
+        function: "startProposalsRegistering",
+        description: "Voters can submit proposals"
+    },
+    {
+        value: 2,
+        label: "End Proposals Registrating",
+        function: "endProposalsRegistering",
+        description: "No more proposals accepted"
+    },
+    {
+        value: 3,
+        label: "Start Voting Session",
+        function: "startVotingSession",
+        description: "Voters can now vote"
+    },
+    {
+        value: 4,
+        label: "End Voting Session",
+        function: "endVotingSession",
+        description: "Voting is closed"
+    }
+];
