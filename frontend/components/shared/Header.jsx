@@ -7,12 +7,8 @@ import { contractAbi, contractAddress, workflowStatus } from '@/constants';
 
 
 const Header = () => {
-    const { data: hash, error, isPending: setIsPending, writeContract } = useWriteContract({});
-    const { isLoading: isConfirming, isSuccess, error: errorConfirmation } = useWaitForTransactionReceipt({ hash });
-
     const [isOpen, setIsOpen] = useState(false);
     const { isConnected, address } = useAccount();
-    //const [selectedWorkflowStatus, setSelectedWorkflowStatus] = useState(0);
 
     const { data: owner, error: errorGetOwner, isPending: isPendingGetOwner, refetch: refetchGetOwner } = useReadContract({
         address: contractAddress,
@@ -37,12 +33,6 @@ const Header = () => {
         refetchEverything();
     })
 
-    console.log('Address : ' + address);
-    console.log('Owner : ' + owner);
-    console.log('error owner :' + errorGetOwner)
-    console.log(owner != address);
-    console.log('workflowstatus is : ' + workflowStatusGet);
-
     return (
         <nav className="bg-white shadow-md">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -58,13 +48,13 @@ const Header = () => {
                         {/* Liens de navigation desktop - visible seulement si connecté */}
                         {isConnected && (
                             <div className="hidden sm:ml-6 sm:flex sm:items-center">
-                                <Link
+                                {address != owner && <Link
                                     href="/"
                                     className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50"
                                 >
                                     Home
-                                </Link>
-                                {owner == address && <Link
+                                </Link>}
+                                {address == owner && <Link
                                     href="/administration"
                                     className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50"
                                 >

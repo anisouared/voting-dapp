@@ -368,5 +368,11 @@ export const workflowStatus = [
         label: "End Voting Session",
         function: "endVotingSession",
         description: "Voting is closed"
+    },
+    {
+        value: 5,
+        label: "Voting completed",
+        function: "",
+        description: "Voting is completed"
     }
 ];

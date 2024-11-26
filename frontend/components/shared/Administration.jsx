@@ -21,12 +21,6 @@ import {
 import { PlusCircle, Vote, History } from "lucide-react"
 
 import {
-    Avatar,
-    AvatarFallback,
-    AvatarImage,
-} from "@/components/ui/avatar"
-
-import {
     Select,
     SelectContent,
     SelectItem,
@@ -43,15 +37,12 @@ import { toast } from "@/hooks/use-toast"
 import { parseAbiItem } from "viem";
 
 
-
 const Administration = () => {
-    const { isConnected, address } = useAccount();
+    const { address } = useAccount();
     const [voterAddress, setVoterAddress] = useState('');
     const [currentWorkflowStatus, setCurrentWorkflowStatus] = useState(-1);
     const [selectedWorkflowStatus, setSelectedWorkflowStatus] = useState(0);
     const [registredVotersEvents, setRegistredVotersEvents] = useState([]);
-    const [proposals, setProposals] = useState([]);
-    const [proposalId, setProposalId] = useState(0);
 
 
     const handleWorkflowStatusChange = async (value) => {
@@ -76,13 +67,13 @@ const Administration = () => {
         account: address
     })
 
+
     const { data: worflowHash, error: workflowError, isPending: workflowIsPending, writeContract: writeWorkflowContract } = useWriteContract({});
     const {
         isLoading: isWorkflowConfirming,
         isSuccess: isWorkflowSuccess,
         error: workflowConfirmationError
     } = useWaitForTransactionReceipt({ hash: worflowHash });
-
     const setNewWorkflowStatus = async () => {
         writeWorkflowContract({
             address: contractAddress,
@@ -98,7 +89,6 @@ const Administration = () => {
         isSuccess: isAddVoterSuccess,
         error: addVoterConfirmationError
     } = useWaitForTransactionReceipt({ hash: addVoterHash });
-
     const setAddVoter = async () => {
         writeAddVoterContract({
             address: contractAddress,
@@ -114,7 +104,6 @@ const Administration = () => {
         isSuccess: isTallyVotesSuccess,
         error: tallyVotesConfirmationError
     } = useWaitForTransactionReceipt({ hash: tallyVotesHash });
-
     const callTallyVotes = async () => {
         writeTallyVotesContract({
             address: contractAddress,
@@ -122,6 +111,7 @@ const Administration = () => {
             functionName: 'tallyVotes'
         })
     }
+
 
     const getVoterRegistredEvents = async () => {
         const voterRegistredLogs = await publicClient.getLogs({
@@ -140,57 +130,6 @@ const Administration = () => {
         })))
     }
 
-    // Ajouter cette fonction après getVoterRegistredEvents
-    const getProposalsIDs = async () => {
-        try {
-            const proposalRegisteredLogs = await publicClient.getLogs({
-                address: contractAddress,
-                event: parseAbiItem('event ProposalRegistered(uint proposalId)'),
-                fromBlock: 0n,
-                toBlock: 'latest'
-            });
-
-            console.log('Proposals logs:', proposalRegisteredLogs);
-
-            const proposalsIds = proposalRegisteredLogs.map(log => (
-                Number(log.args.proposalId)
-            ));
-
-            return proposalsIds;
-        } catch (error) {
-            console.error('Error fetching proposals:', error);
-            toast({
-                title: "Error fetching proposals",
-                description: "Failed to load proposals",
-                variant: "destructive",
-            });
-        }
-    };
-
-    // Fonction pour récupérer les détails d'une proposition
-    const getProposalDetails = async (proposalId) => {
-        try {
-            const data = await publicClient.readContract({
-                address: contractAddress,
-                abi: contractAbi,
-                functionName: 'proposalsArray',
-                args: [proposalId]
-            });
-            return { id: proposalId, description: data[0], voteCount: data[1] };
-        } catch (error) {
-            console.error(`Error fetching proposal ${proposalId}:`, error);
-            return { id: proposalId, description: 'Error loading proposal', voteCount: 0 };
-        }
-    };
-
-    const getAllProposalsDetails = async () => {
-        const proposalsIds = await getProposalsIDs();
-
-        const promises = proposalsIds.map(proposal => getProposalDetails(proposal))
-
-        const results = await Promise.all(promises);
-        setProposals(results);
-    }
 
     useEffect(() => {
         if (isWorkflowSuccess) {
@@ -198,7 +137,6 @@ const Administration = () => {
             setSelectedWorkflowStatus(selectedWorkflowStatus + 1);
         }
     }, [isWorkflowSuccess])
-
 
     useEffect(() => {
         if (isAddVoterSuccess) {
@@ -218,9 +156,6 @@ const Administration = () => {
         }
     }, [workflowStatusGet])
 
-    useEffect(() => {
-        getAllProposalsDetails()
-    }, [])
 
     return (
         <>
@@ -233,9 +168,9 @@ const Administration = () => {
                                 <div className="w-12 h-12 bg-[#f45970]/10 rounded-full flex items-center justify-center">
                                     <PlusCircle className="w-6 h-6 text-[#f45970]" />
                                 </div>
-                                <CardTitle className="text-xl flex items-center justify-center">Voting proposals</CardTitle>
+                                <CardTitle className="text-xl flex items-center justify-center">Voters</CardTitle>
                                 <CardDescription>
-                                    Candidates list
+                                    Voters list
                                 </CardDescription>
                             </CardHeader>
                             <CardContent className="flex-1">
@@ -263,37 +198,6 @@ const Administration = () => {
                                                             <TableCell>
                                                                 <span className="inline-flex items-center rounded-full px-2 py-1 text-xs font-medium bg-green-100 text-green-700">
                                                                     Registered
-                                                                </span>
-                                                            </TableCell>
-                                                        </TableRow>
-                                                    ))}
-                                                </TableBody>
-                                            </Table>
-                                        </div>
-                                    </div>
-
-                                    {/* Liste des Proposals avec scroll */}
-                                    <div className="border rounded-lg">
-                                        <div className="font-medium p-3 bg-gray-50 border-b">
-                                            Proposals List
-                                        </div>
-                                        <div className="max-h-[200px] overflow-y-auto">
-                                            <Table>
-                                                <TableHeader>
-                                                    <TableRow>
-                                                        <TableHead>Proposal</TableHead>
-                                                        <TableHead>Votes</TableHead>
-                                                    </TableRow>
-                                                </TableHeader>
-                                                <TableBody>
-                                                    {proposals.map((_, index) => (
-                                                        <TableRow key={index}>
-                                                            <TableCell className="flex items-center gap-2">
-                                                                {_.description}
-                                                            </TableCell>
-                                                            <TableCell>
-                                                                <span className="inline-flex items-center rounded-full px-2 py-1 text-xs font-medium bg-blue-100 text-blue-700">
-                                                                    {_.voteCount} votes
                                                                 </span>
                                                             </TableCell>
                                                         </TableRow>
