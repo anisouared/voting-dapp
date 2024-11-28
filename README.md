@@ -26,7 +26,7 @@ Le **smart contract** est écrit en **Solidity** et déployé sur le testnet **S
 ## Déploiement et Démo
 
 - **Vidéo Démo des Fonctionnalités** :  
-  Vous pouvez consulter la vidéo démontrant les fonctionnalités du système [ici](https://liendevideo.com).
+  Vous pouvez consulter la vidéo démontrant les fonctionnalités du système [ici]([https://liendevideo.com](https://drive.google.com/file/d/1J3x5q1NvDaldIKqG913OfrrLDs7qy_ky/view?usp=drive_link)).
   
 - **Déploiement public de la DApp** :  
   La DApp est accessible sur Vercel à l'adresse suivante :  
