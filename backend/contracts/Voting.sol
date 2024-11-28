@@ -48,7 +48,7 @@ contract Voting is Ownable {
 
     // on peut faire un modifier pour les états
 
-    // ::::::::::::: GETTERS ::::::::::::: //
+    // ::::::::::: GETTERS ::::::::::: //
 
     function getVoter(
         address _addr
